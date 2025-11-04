@@ -4,7 +4,7 @@ pipeline {
 
     environment {
         // 'expo-token' est l'ID que vous avez créé dans Jenkins
-        FRONT_TOKEN = credentials('expo-token')
+        EXPO_TOKEN = credentials('expo-token')
     }
 
     stages {
