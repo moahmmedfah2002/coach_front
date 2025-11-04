@@ -1,18 +1,21 @@
+
 // components/AddGoalModal.tsx
 import React, { useState, useEffect } from 'react';
-// Importer les composants de base
-import { View, Text, TextInput, TouchableOpacity, Modal, Pressable } from 'react-native';
+// Importer 'Platform' pour gérer les différences iOS/Android
+import { View, Text, TextInput, TouchableOpacity, Modal, Pressable, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
-// Importer Omit de Goal
+// Importer le type 'Goal'
 import { Goal } from '../types';
 
+// Définir les props que ce composant reçoit
 type AddGoalModalProps = {
   isVisible: boolean;
   onClose: () => void;
   onSave: (goalData: Omit<Goal, 'id' | 'status'>) => void;
 };
 
+// Map des recommandations d'exercices
 const drillRecommendations: { [key: string]: string } = {
   'dribbling': 'Cone Weaving Drill',
   'shooting': 'Target Practice Drill',
@@ -26,42 +29,72 @@ export default function AddGoalModal({ isVisible, onClose, onSave }: AddGoalModa
   const [selectedGoal, setSelectedGoal] = useState('');
   const [drillName, setDrillName] = useState('');
 
+  // Mettre à jour l'exercice recommandé lorsque l'objectif change
   useEffect(() => {
     setDrillName(drillRecommendations[selectedGoal] || '');
   }, [selectedGoal]);
 
+  // Gérer la sauvegarde
   const handleSave = () => {
-    if (!playerName || !selectedGoal) return;
+    if (!playerName || !selectedGoal) return; // Validation simple
     onSave({
       player_name: playerName,
       goal: selectedGoal,
       drill_name: drillName,
     });
+    // Réinitialiser le formulaire après la sauvegarde
     setPlayerName('');
     setSelectedGoal('');
   };
 
+  // Composant Picker réutilisable avec les corrections de style
+  const GoalPicker = () => (
+    <Picker
+      selectedValue={selectedGoal}
+      onValueChange={(itemValue: string) => setSelectedGoal(itemValue)}
+      
+      // Style pour Android (couleur de l'item sélectionné)
+      style={{ width: '100%', color: '#000000' }} 
+      
+      // Style pour iOS (couleur des items dans le "tambour")
+      itemStyle={{ 
+        color: '#000000', // Force le texte en NOIR
+        fontSize: 18,
+        height: 150 
+      }}
+    >
+      {/* Ajouter la prop 'color' à chaque item garantit
+        que le texte est visible sur Android et iOS.
+      */}
+      <Picker.Item label="Select a goal" value="" color="#888888" />
+      <Picker.Item label="Improve Dribbling" value="dribbling" color="#000000" />
+      <Picker.Item label="Shooting Accuracy" value="shooting" color="#000000" />
+      <Picker.Item label="Passing Precision" value="passing" color="#000000" />
+      <Picker.Item label="Defensive Skills" value="defending" color="#000000" />
+      <Picker.Item label="Physical Fitness" value="fitness" color="#000000" />
+    </Picker>
+  );
+
   return (
-    // Utiliser <Modal>
+    // Utiliser le composant <Modal> pour s'afficher par-dessus
     <Modal
       animationType="fade"
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
     >
-      {/* Utiliser <Pressable> */}
+      {/* Fond sombre cliquable pour fermer la modale */}
       <Pressable onPress={onClose} className="flex-1 items-center justify-center bg-black/50 p-4">
-        {/* Utiliser <Pressable> */}
+        
+        {/* Conteneur blanc (non cliquable pour ne pas fermer) */}
         <Pressable onPress={() => {}} className="bg-white rounded-xl p-6 w-full max-w-md">
-          {/* Utiliser <Text> */}
+          
           <Text className="text-lg font-semibold text-gray-900 mb-4">
             Add New Training Goal
           </Text>
-          {/* Utiliser <View> */}
           <View className="space-y-4">
             <View>
               <Text className="text-sm font-medium text-gray-700 mb-1">Player Name</Text>
-              {/* Utiliser <TextInput> */}
               <TextInput
                 value={playerName}
                 onChangeText={setPlayerName}
@@ -70,23 +103,22 @@ export default function AddGoalModal({ isVisible, onClose, onSave }: AddGoalModa
                 placeholderTextColor="#9ca3af"
               />
             </View>
+            
             <View>
               <Text className="text-sm font-medium text-gray-700 mb-1">Training Goal</Text>
-              <View className="border border-gray-300 rounded-lg">
-                {/* Utiliser <Picker> */}
-                <Picker
-                  selectedValue={selectedGoal}
-                  onValueChange={(itemValue: string) => setSelectedGoal(itemValue)}
-                >
-                  <Picker.Item label="Select a goal" value="" />
-                  <Picker.Item label="Improve Dribbling" value="dribbling" />
-                  <Picker.Item label="Shooting Accuracy" value="shooting" />
-                  <Picker.Item label="Passing Precision" value="passing" />
-                  <Picker.Item label="Defensive Skills" value="defending" />
-                  <Picker.Item label="Physical Fitness" value="fitness" />
-                </Picker>
-              </View>
+              
+              {/* Logique d'affichage spécifique à la plateforme */}
+              {Platform.OS === 'android' ? (
+                // Sur Android, on garde la bordure autour
+                <View className="border border-gray-300 rounded-lg">
+                  <GoalPicker />
+                </View>
+              ) : (
+                // Sur iOS, on affiche le tambour directement
+                <GoalPicker />
+              )}
             </View>
+
             <View>
               <Text className="text-sm font-medium text-gray-700 mb-1">Recommended Drill</Text>
               <TextInput
@@ -96,7 +128,6 @@ export default function AddGoalModal({ isVisible, onClose, onSave }: AddGoalModa
               />
             </View>
             <View className="flex-row space-x-3 pt-4">
-              {/* Utiliser <TouchableOpacity> */}
               <TouchableOpacity
                 onPress={onClose}
                 className="flex-1 px-4 py-3 border border-gray-300 rounded-lg items-center"
@@ -111,6 +142,7 @@ export default function AddGoalModal({ isVisible, onClose, onSave }: AddGoalModa
               </TouchableOpacity>
             </View>
           </View>
+
         </Pressable>
       </Pressable>
     </Modal>
