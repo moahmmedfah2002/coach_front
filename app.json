@@ -1,8 +1,6 @@
 {
   "expo": {
-    "android": {
-      "package": "com.fahlaoui.coachfront"
-    },
+
     "name": "my-expo-app",
     "slug": "my-expo-app",
     "version": "1.0.0",
@@ -31,7 +29,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.fahlaoui.coachfront"
     },
     "extra": {
       "eas": {
