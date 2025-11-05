@@ -8,7 +8,7 @@
       "channel": "development",
 
       "ios": {
-
+        "bundleIdentifier": "com.fahlaoui.coach-app-dev"
       }
     },
     "preview": {
