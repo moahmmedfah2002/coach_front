@@ -1,14 +1,12 @@
-// Jenkinsfile
 pipeline {
     agent any
 
     environment {
-        // 'expo-token' est l'ID que vous avez créé dans Jenkins
+        // Expo access token stored in Jenkins credentials
         EXPO_TOKEN = credentials('expo-token')
     }
 
     stages {
-
         stage('Checkout') {
             steps {
                 checkout scm
@@ -17,31 +15,39 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                // MODIFICATION : 'sh' est devenu 'bat'
                 bat 'npm install'
             }
         }
 
         stage('Install EAS CLI') {
             steps {
-                // MODIFICATION : 'sh' est devenu 'bat'
                 bat 'npm install -g eas-cli'
             }
         }
 
-        stage('Build Android App (via EAS)') {
+        stage('Login to Expo (non-interactive)') {
+            steps {
+                bat 'eas whoami || eas login --token %EXPO_TOKEN%'
+            }
+        }
+
+        stage('Build iOS App (via EAS)') {
             steps {
                 script {
-                    echo 'Connexion à Expo...'
-
-                    echo 'Lancement du build Android sur les serveurs EAS...'
-                    // MODIFICATION : 'sh' est devenu 'bat'
-                    bat 'eas build --platform android --non-interactive --profile production'
-
-                    echo 'Le build est en cours sur les serveurs dExpo.'
-                    echo 'Vous pouvez voir la progression sur https://expo.dev/builds'
+                    echo '🔗 Lancement du build iOS sur les serveurs EAS...'
+                    bat 'eas build --platform ios --non-interactive --profile production'
+                    echo '🚀 Le build iOS est en cours sur Expo. Consultez la progression sur https://expo.dev/builds'
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Build iOS déclenché avec succès !'
+        }
+        failure {
+            echo '❌ Échec du build iOS.'
         }
     }
 }
