@@ -6,9 +6,7 @@
     "development": {
       "distribution": "internal",
       "channel": "development",
-      "android": {
-        "buildType": "apk"
-      },
+
       "ios": {
         "bundleIdentifier": "com.tonentreprise.tonapp"
       }
