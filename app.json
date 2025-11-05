@@ -1,6 +1,5 @@
 {
   "expo": {
-
     "name": "my-expo-app",
     "slug": "my-expo-app",
     "version": "1.0.0",
@@ -23,7 +22,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fahlaoui.mohammed",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {

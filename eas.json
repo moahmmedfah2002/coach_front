@@ -5,11 +5,9 @@
   "build": {
     "development": {
       "distribution": "internal",
-      "channel": "development",
+      "channel": "development"
 
-      "ios": {
-        "bundleIdentifier": "com.fahlaoui.coach-app-dev"
-      }
+
     },
     "preview": {
       "distribution": "internal",
